@@ -1,0 +1,37 @@
+# Instalar pacotes necessários, caso não os tenha
+#install.packages("WDI")  # Para acessar dados do Banco Mundial
+#install.packages("dplyr")  # Para manipulação de dados
+#install.packages("ggplot2")  # Para visualização de dados
+
+options(scipen = 999)
+
+# Carregar pacotes
+library(WDI)
+library(dplyr)
+library(ggplot2)
+
+# Definir os códigos do Banco Mundial para as variáveis de interesse
+# Taxa de desemprego, pobreza extrema, pobreza moderada, e índice de Gini
+vars <- c('TD' = "SL.UEM.TOTL.ZS",   # Taxa de desemprego (% da população ativa)
+          'PE' = "SI.POV.DDAY")     # Pobreza extrema (% da população vivendo com menos
+
+# Baixar os dados do Banco Mundial para os últimos anos (por exemplo, de 2000 a 2023)
+
+
+dados <- WDI(country = "all", indicator = vars, start = 2000, end = 2023)%>% na.omit()
+
+# Corrigir o gráfico de dispersão
+grafico_dispersao <- ggplot(data = dados, mapping = aes(x = TD, y = PE)) +
+  geom_point()
+print(grafico_dispersao)
+
+
+dados_br <- WDI(country ='BR', indicator = vars, start = 2000, end = 2023)%>% na.omit()
+
+grafico_temporal <- ggplot(data = dados_br, mapping = aes(x = year, y = PE)) +
+  geom_line()
+print(grafico_temporal)
+
+
+
+
