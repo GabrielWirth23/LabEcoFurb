@@ -1,0 +1,128 @@
+#install.packages("tidyverse")
+#install.packages('palmerpenguins')
+#install.packages("ggplot2") 
+#install.packages("dplyr")
+#install.packages("WDI")
+
+library(WDI)
+library(dplyr)
+library(ggplot2)
+
+# Definir os códigos para as variáveis
+vars <- c(
+  'Taxa de Desemprego' = "SL.UEM.TOTL.ZS",
+  'Pobreza Extrema' = "SI.POV.DDAY"
+)
+
+# Baixar os dados
+dados <- WDI(country = "all", indicator = vars, start = 2000, end = 2023) %>% na.omit()
+
+# Verificar os nomes das colunas
+print(names(dados))  # Aqui verificamos os nomes, eles devem ser 'Taxa de Desemprego' e 'Pobreza Extrema'
+
+# Gráfico de dispersão
+ggplot(dados, aes(x = `Taxa de Desemprego`, y = `Pobreza Extrema`)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  labs(title = "Relação entre Desemprego e Pobreza Extrema", x = "Taxa de Desemprego (%)", y = "Pobreza Extrema (%)")
+
+# Baixar os dados para o Brasil
+dados_br <- WDI(country = 'BR', indicator = vars, start = 2000, end = 2023) %>% na.omit()
+
+# Gráfico temporal para o Brasil
+ggplot(dados_br, aes(x = year, y = `Pobreza Extrema`)) +
+  geom_line(color = "red", linewidth = 1) +
+  labs(title = "Evolução da Pobreza Extrema no Brasil", x = "Ano", y = "Pobreza Extrema (%)")
+
+labs(title = "Evolução da Pobreza Extrema no Brasil", x = "Ano", y = "Pobreza Extrema (%)")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------
+
+
+
+---
+title: "Gabriel Wirth"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Meet Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+```{r}
+#| label: graf
+#| warning: false
+#| echo: false
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species, shape = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(
+    title = "Flipper and bill length",
+    subtitle = "Dimensions for penguins at Palmer Station LTER",
+    x = "Flipper length (mm)", y = "Bill length (mm)",
+    color = "Penguin species", shape = "Penguin species"
+  ) +
+  theme_minimal()
+
+
+```
+
+\
+
+##  Meet the penguins
+
+![](https://raw.githubusercontent.com/quarto-dev/quarto-web/main/docs/get-started/hello/rstudio/lter_penguins.png){style="float:right;" fig-alt="Illustration of three species of Palmer Archipelago penguins: Chinstrap, Gentoo, and Adelie. Artwork by @allison_horst." width="401"}
+
+The `penguins` data from the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins "palmerpenguins R package") package contains size measurements for `{r} nrow(penguins)` penguins from three species observed on three islands in the Palmer Archipelago, Antarctica.
+
+The plot below shows the relationship between flipper and bill lengths of these penguins.
+
+```{r}
+#| label: plot-penguins
+#| warning: false
+#| echo: false
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species, shape = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(
+    title = "Flipper and bill length",
+    subtitle = "Dimensions for penguins at Palmer Station LTER",
+    x = "Flipper length (mm)", y = "Bill length (mm)",
+    color = "Penguin species", shape = "Penguin species"
+  ) +
+  theme_minimal()
+```
+
