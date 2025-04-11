@@ -1,0 +1,125 @@
+---
+title: "Gabriel Wirth"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r}
+#| label: load-data
+#| include: false
+
+#cógigo de carregamento dos dados
+library(WDI)
+library(dplyr)
+library(ggplot2)
+
+# Definir os códigos para as variáveis
+vars <- c(
+  'Taxa de Desemprego' = "SL.UEM.TOTL.ZS",
+  'Pobreza Extrema' = "SI.POV.DDAY")
+
+dados_br <- WDI(country = 'BR', indicator = vars, start = 2000, end = 2023) %>% na.omit()
+
+  
+
+
+
+```
+
+```{r}
+#| label: load-data2
+#| include: false
+
+
+library(WDI)
+library(dplyr)
+library(ggplot2)
+library(ggrepel)
+
+# Definir os códigos para as variáveis
+vars <- c(
+  'Taxa de Desemprego' = "SL.UEM.TOTL.ZS",
+  'Pobreza Extrema' = "SI.POV.DDAY"
+)
+
+# Baixar os dados
+dadosall3 <- WDI(country = "all", indicator = vars, start = 2015, end = 2015) %>% na.omit()
+
+# Lista de países europeus
+paises_europeus <- c(
+  "Albania", "Andorra", "Armenia", "Austria", "Azerbaijan", "Belarus", "Belgium", 
+  "Bosnia and Herzegovina", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", 
+  "Denmark", "Estonia", "Finland", "France", "Georgia", "Germany", "Greece", 
+  "Hungary", "Iceland", "Ireland", "Italy", "Kazakhstan", "Kosovo", "Latvia", 
+  "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Moldova", "Monaco", 
+  "Montenegro", "Netherlands", "North Macedonia", "Norway", "Poland", "Portugal", 
+  "Romania", "Russia", "San Marino", "Serbia", "Slovakia", "Slovenia", "Spain", 
+  "Sweden", "Switzerland", "Turkey", "Ukraine", "United Kingdom", "Vatican City"
+)
+
+# Filtrar os dados apenas para os países da Europa
+dados_europa <- dadosall3 %>% 
+  filter(country %in% paises_europeus)
+
+
+
+# Filtrar os países com as 10 maiores taxas de desemprego para rotular
+dados_europa_top10 <- dados_europa %>% 
+  arrange(desc(`Taxa de Desemprego`)) %>% 
+  head(10)
+
+
+
+```
+
+## Série Temporal da Pobreza Extrema no Brasil: Um Retrato de 2000 a 2023
+
+O gráfico mostra a evolução da pobreza extrema no Brasil entre 2000 e 2023. Observa-se uma tendência geral de queda ao longo do período, especialmente entre 2003 e 2014, quando a taxa diminuiu de forma consistente. A partir de 2015, há uma leve reversão com aumento até 2018, seguida por uma estabilização em torno de 5% nos anos seguintes. Isso indica avanços importantes nas políticas de combate à pobreza no início do período, mas também desafios recentes na manutenção dessas conquistas.
+
+```{r}
+#| label: graf
+#| warning: false
+#| echo: false
+
+ # Gráfico temporal para o Brasil
+  ggplot(dados_br, aes(x = year, y = `Pobreza Extrema`)) +
+    geom_line(color = "red", linewidth = 1) +
+    labs(title = "Evolução da Pobreza Extrema no Brasil, 2000 até 2023", x = "Ano", y = "Pobreza Extrema (%)")
+  
+
+```
+
+## Desemprego e Pobreza Extrema na Europa em 2015: Um Corte Transversal dos 10 Países Mais Afetados
+
+O gráfico mostra a relação entre taxa de desemprego e pobreza extrema nos 10 países europeus com maiores taxas de desemprego em 2015. Observa-se que, embora haja uma tendência geral de que o desemprego mais alto esteja associado à maior pobreza extrema, essa relação não é perfeitamente linear. Países como a Sérvia e a Geórgia apresentam níveis de pobreza extrema relativamente altos com desemprego moderado, enquanto Grécia e Espanha, apesar do alto desemprego, mantêm níveis mais baixos de pobreza extrema. Isso sugere que outros fatores além do desemprego influenciam os níveis de pobreza extrema nesses países.\
+
+```{r}
+#| label: graf2
+#| warning: false
+#| echo: false
+
+# Gráfico com menos rótulos (apenas 10 países com as maiores taxas de desemprego)
+ggplot(dados_europa_top10, aes(x = `Taxa de Desemprego`, y = `Pobreza Extrema`, label = country)) +
+  geom_point(alpha = 0.5, color = "blue") +  # Pontos baseados no dados_europa_top10
+  geom_text_repel(aes(label = country), size = 3, box.padding = 0.5, 
+                  point.padding = 0.5, max.overlaps = 10) +  # Rotular apenas os 10 países
+  labs(title = "Top 10 paises Desemprego X Pobreza Europa em 2015", 
+       x = "Taxa de Desemprego (%)", y = "Pobreza Extrema (%)") +
+  theme_minimal()
+```
+
+\
+\
+\
+
+## Referências
+
+BANCO MUNDIAL. *Dados sobre pobreza e desemprego*. Washington, DC: Banco Mundial, 2015. Disponível em: <https://data.worldbank.org>. Acesso em: 11 abr. 2025.
