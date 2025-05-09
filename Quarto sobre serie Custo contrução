@@ -1,0 +1,174 @@
+---
+title: "Gabriel Wirth"
+format: 
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "Conteúdo"
+    number-sections: true
+    code-fold: show
+editor: visual
+---
+
+
+## Custo de Construção: Materiais e Serviços de 1997 a 2025
+
+O Custo de Construção no Brasil (1997–2025) mostra como os preços de materiais e serviços na construção civil variaram mês a mês ao longo de quase 30 anos. A série revela períodos de estabilidade (2003–2014), seguidos por fortes oscilações durante crises econômicas e a pandemia (2015–2022). A partir de 2023, os custos voltam a se estabilizar, indicando um possível novo ciclo de equilíbrio no setor.
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(GetBCBData)
+library(ggplot2)
+library(scales)
+```
+
+```{r}
+#| label: load-data
+#| include: false
+
+# Código de carregamento dos dados
+CMS2 <- c(CMS = 7462)
+df.bcb <- gbcbd_get_series(
+  id = CMS2,
+  first.date = '1997-01-31',
+  last.date = Sys.Date(),
+  format.data = 'long',
+  use.memoise = TRUE, 
+  cache.path = tempdir(),
+  do.parallel = FALSE
+)
+
+glimpse(df.bcb)
+
+```
+
+
+
+
+```{r}
+#| label: graf
+#| warning: false
+#| echo: false
+
+p <- ggplot(df.bcb, aes(x = ref.date, y = value)) +
+  geom_line(color = "#2C3E50", size = 1) +
+  labs(
+    title = 'Custo de Construção: Materiais e Serviços',
+    subtitle = paste0(format(min(df.bcb$ref.date), "%Y"), " a ", format(max(df.bcb$ref.date), "%Y")),
+    x = '', 
+    y = 'Variação mensal (%)'
+  ) + 
+  scale_x_date(
+    breaks = date_breaks("1 year"),
+    labels = date_format("%Y")
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(size = 16, color = "#444444"),
+    plot.subtitle = element_text(size = 13, color = "#666666"),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10, color = "#444444"),
+    axis.text.y = element_text(size = 10, color = "#444444"),
+    axis.title.y = element_text(size = 11, color = "#555555"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+
+print(p)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------
+
+
+
+#install.packages("GetBCBData")
+#install.packages("tidyverse")
+library(GetBCBData)
+
+
+library(tidyverse) # TAMBÉM É NECESSÁRIO
+
+# INSTRUÇÕES DO PACOTE (VIGNETTE)
+# https://cran.r-project.org/web/packages/GetBCBData/vignettes/GetBCBData-vignette.html
+
+# OS CÓDIGOS DAS VARIÁVEIS VÊM DIRETO DA PLATAFORMA
+# ACESSAR O SGS
+# http://www.bcb.gov.br/?sgs
+
+# EXEMPLO COM CDI
+# METADADOS
+# Taxa média de juros tendo como base as operações de emissão de Depósitos 
+# Interfinanceiros pré-fixados, pactuadas por um dia útil, registradas e 
+# liquidadas pelo sistema Cetip, considerando apenas operações do mercado 
+#interbancário realizadas entre instituições de conglomerados diferentes 
+# (Extra-grupo), desprezando-se as demais (Intra-Grupo).
+library(ggplot2)
+library(scales)
+
+CMS2 <- c(CMS = 7462)
+df.bcb <- gbcbd_get_series(id = CMS2,
+                           first.date = '1997-01-31',
+                           last.date = Sys.Date(),
+                           format.data = 'long',
+                           use.memoise = TRUE, 
+                           cache.path = tempdir(), # use tempdir for cache folder
+                           do.parallel = FALSE)
+
+glimpse(df.bcb)
+
+p <- ggplot(df.bcb, aes(x = ref.date, y = value)) +
+  geom_line(color = "#2C3E50", size = 1) +  # Azul escuro elegante
+  labs(
+    title = 'Custo de Construção: Materiais e Serviços',
+    subtitle = paste0(format(min(df.bcb$ref.date), "%Y"), " a ", format(max(df.bcb$ref.date), "%Y")),
+    x = '', 
+    y = 'Variação mensal (%)'
+  ) + 
+  scale_x_date(
+    breaks = date_breaks("1 year"),
+    labels = date_format("%Y")
+  ) +
+  theme_minimal(base_size = 13) +  # Fonte um pouco menor
+  theme(
+    plot.title = element_text(size = 16, color = "#444444"),       # Sem negrito
+    plot.subtitle = element_text(size = 13, color = "#666666"),    # Mais discreto
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10, color = "#444444"),
+    axis.text.y = element_text(size = 10, color = "#444444"),
+    axis.title.y = element_text(size = 11, color = "#555555"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )
+
+print(p)
+
+
+
+head(7462)
+
+
+
