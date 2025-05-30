@@ -1,0 +1,49 @@
+---
+title: "Custo da Construção"
+format: html
+---
+
+## Gráfico Estático
+
+
+
+---
+title: "Custo da Construção Animado"
+format: html
+---
+
+## Gráfico Animado
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(GetBCBData)
+library(scales)
+library(gganimate)
+
+CMS2 <- c(CMS = 7462)
+df.bcb <- gbcbd_get_series(
+  id = CMS2,
+  first.date = '1997-01-31',
+  last.date = Sys.Date(),
+  format.data = 'long'
+)
+
+p_animado <- ggplot(df.bcb, aes(x = ref.date, y = value)) +
+  geom_line(color = "#0072B2", linewidth = 1) +  # linha azul
+  labs(
+    title = 'Custo de Construção: Materiais e Serviços',
+    x = 'Ano',
+    y = 'Variação mensal (%)'
+  ) +
+  scale_x_date(
+    breaks = date_breaks("2 years"),
+    labels = date_format("%Y")
+  ) +
+  theme_minimal() +
+  transition_reveal(ref.date)
+
+anim_save("anim.gif", animation = animate(p_animado, renderer = gifski_renderer()))
+knitr::include_graphics("anim.gif")
+
+```
