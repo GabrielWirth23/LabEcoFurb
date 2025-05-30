@@ -1,0 +1,65 @@
+---
+title: "Gabriel Wirth"
+format: html
+---
+
+## Índice de Preço do Custo de Construção
+
+
+
+O Índice de Custo da Construção, representado pela variável Índice de Custo de Materiais e Serviços (CMS) nos dados do Banco Central do Brasil, mede a variação no custo de materiais e serviços essenciais para a construção civil ao longo do tempo. Esse índice é utilizado como um indicador da inflação específica do setor de construção e ajuda a entender como os preços de materiais como cimento, aço e outros insumos, além dos custos com mão de obra e serviços, estão se comportando.
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(GetBCBData)
+library(scales)
+library(gganimate)
+
+CMS2 <- c(CMS = 7462)
+df.bcb <- gbcbd_get_series(
+  id = CMS2,
+  first.date = '1997-01-31',
+  last.date = Sys.Date(),
+  format.data = 'long'
+)
+
+p_animado <- ggplot(df.bcb, aes(x = ref.date, y = value)) +
+  geom_line(color = "#0072B2", linewidth = 1) +  # linha azul
+  labs(
+    title = 'Custo de Construção: Materiais e Serviços',
+    x = 'Ano',
+    y = 'Variação mensal (%)'
+  ) +
+  scale_x_date(
+    breaks = date_breaks("2 years"),
+    labels = date_format("%Y")
+  ) +
+  theme_minimal() +
+  transition_reveal(ref.date)
+
+anim_save("anim.gif", animation = animate(p_animado, renderer = gifski_renderer()))
+knitr::include_graphics("anim.gif")
+
+```
+
+
+## Importância da variável Índice de Custo da Construção
+
+# Indicador Econômico:
+O Índice de Custo da Construção reflete as variações nos preços do setor de construção, ajudando a identificar tendências inflacionárias dentro do mercado imobiliário. Isso é fundamental tanto para investidores quanto para gestores públicos que planejam e implementam políticas de infraestrutura.
+
+# Impacto nos Custos de Habitação e Infraestrutura:
+A flutuação do Índice de Custo da Construção pode alterar significativamente os custos totais de construção de imóveis e obras públicas. O aumento do custo dos materiais e serviços eleva o preço de venda dos imóveis ou os gastos com projetos públicos, impactando diretamente no orçamento de famílias e governos.
+
+# Planejamento de Investimentos e Projetos: 
+Empresas de construção civil e investidores usam o Índice de Custo da Construção para projetar orçamentos mais precisos e prever a viabilidade econômica de novos empreendimentos. A variável também auxilia em decisões relacionadas ao cronograma e ao financiamento de grandes projetos de infraestrutura.
+
+# Análise de Longo Prazo: 
+A série temporal do Índice de Custo da Construção permite uma análise detalhada das flutuações ao longo dos anos, fornecendo um quadro de como os custos de construção se comportaram ao longo do tempo. Isso é importante para analisar como crises econômicas ou mudanças nos preços globais impactaram o setor.
+
+
+
+# Fonte
+Banco Central do Brasil. Série histórica de índices de preços. Disponível em: https://www.bcb.gov.br/. Acesso em: 30 mai. 2025.
